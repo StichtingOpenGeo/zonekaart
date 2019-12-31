@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zonekaart</title>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.2.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.2.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body { margin:0; padding:0; }
+    #map { position:absolute; top:0; bottom:0; width:100%; }
+    .boxdraw {
+       background: rgba(56,135,190,0.1);
+       border: 2px solid #3887be;
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 0;
+       height: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id='map'></div>
+  <script>
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'style.json',
+	minZoom: 8,
+        maxZoom: 13,
+	maxBounds: [[2.992192, 50.74753], [7.230455, 54.01786]],
+        attributionControl: true,
+        hash: true
+      });
+      map.addControl(new mapboxgl.NavigationControl());
+
+      // Disable default box zooming.
+      map.boxZoom.disable();
+      map.on('load', function() {
+        map.addLayer({
+                "id": "zones-highlighted",
+                "type": "fill",
+                "source": "zones",
+                "source-layer": "zones",
+                "paint": {
+                        "fill-outline-color": "#484896",
+                        "fill-color": "#6e599f",
+                        "fill-opacity": 0.75
+                },
+                "filter": ["in", "ZONE_ID", ""]
+        }, 'zones-labels'); // Place polygon under these labels.
+
+        setupSelection(map, "zones-fill", "zones-highlighted", "ZONE_ID");
+
+        window.addEventListener('selection-ZONE_ID', function(e) {
+          window.parent.postMessage({"zone-ids": e.detail}, "*");
+          console.log('Zones: ' + e.detail);
+        });
+
+        window.addEventListener('message', function(e) {
+          if ('zone-ids' in e.data) {
+            console.log("Overwriting selected zones with message")
+            map.setFilter("zones-highlighted", ['in', "ZONE_ID"].concat(e.data['zone-ids']));
+          }
+        });
+
+
+      });
+  </script>
+  <script src='array-xor.js'></script>
+  <script src='drag-selection.js'></script>
+  </body>
+</html>
