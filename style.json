@@ -19,15 +19,14 @@
     "sources": {
         "openmaptiles": {
             "type": "vector",
-            "url": "https://services.opengeo.nl/services/openmaptiles"
+            "url": "https://mvt.opengeo.nl/services/openmaptiles"
         },
         "zones": {
             "type": "vector",
-            "url": "https://services.opengeo.nl/services/zones"
+            "url": "https://mvt.opengeo.nl/services/zones"
         }
     },
-    "sprite": "https://openmaptiles.github.io/klokantech-basic-gl-style/sprite",
-    "glyphs": "https://services.opengeo.nl/zonekaart/fonts/{fontstack}/{range}.pbf",
+    "glyphs": "https://mvt.opengeo.nl/fonts/{fontstack}/{range}.pbf",
     "layers": [
         {
             "id": "background",
